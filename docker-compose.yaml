@@ -1,0 +1,25 @@
+services:
+  lensforge:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - custom/.env
+    volumes:
+      - model-cache:/root/.cache/huggingface
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  test:
+    build: .
+    entrypoint: ["pytest"]
+    command: ["tests/unit/", "-v"]
+    volumes:
+      - model-cache:/root/.cache/huggingface
+    profiles:
+      - test
+
+volumes:
+  model-cache:
